@@ -1,0 +1,63 @@
+Deliver It Enthusiastic! My Indie Delivery Service (DIE MIDS)
+
+Author: Laurent Bedubourg <laurent@labe.me>
+
+* Short description
+
+This project help you *easily* create a secure and low cost delivery system for your virtual Goods (files) using Amazon Web Services S3 and CloudFront. Perfect for indie games delivery but also good for any kind of file based shop.
+
+* About
+
+Once upon a time an indie game developer used Share-it to deliver its games files. The backend interface was old, slow, complex. The service wasn't free too.
+There was options but something was wrong with each of them.
+Then the developer meet Gumroad and was pleased by the simplicity but was dissatisfied with the lack security and the lack of different payment types.
+The developer took the time to think.
+He heard about Amazon Web Services cheapness but wondered if there was a way to secure files a little bit. He also was afraid of having to manage a bloated system and lose time instead of creating games.
+Suddenly a page he never saw before popped up on Paypal: Virtual Goods 10cents + 5% for goods priced less than 10 bucks.
+He decided to take a deeper look at Amazon Web Services (AWS).
+
+After some research he knew that:
+1. it was possible to make the S3 bucket (the place where you put your files) private
+2. it was possible use CloudFront as a proxy to the bucket and only allow downloads through signed URLs with an expiration date
+3. it would cost less than $1.50 for 1000 secure downloads of a 10MB file per month
+4. the AWS API was quite complex and he had to find some library to play with it
+5. he had to make the world a better place and share his idea and code with the world.
+
+Hence was born the idea of "Deliver It Enthusiastic! My Indie Delivery Service" (DIE MIDS).
+
+* Philosophy
+
+Safeguard your independence and your freedom.
+
+Simple Stupid
+
+This project is made public to help developers have a better share and a better control on their goods.
+
+This project has to make things dead simple and easy.
+
+This project has to be modular so developers can use the part they like from their own code.
+
+* What DIE MIDS can do for you
+
+DIE MIDS contains a few things to make your life simpler:
+
+- a configuration script which will configure S3 and CloudFront so you won't have to bother learning how they work and how to manipulate their APIs.
+
+- an easy way to upload files to S3 (although you can use any tool under the sun to do that)
+
+- an easy way to generate signed (ie: secure) URLs for files you uploaded on S3.
+  Signed URLs cannot be modified by users, CloudFront will refuse to serve the file if the URLs is not requested has you generated it or is not Signed. Signed URLs have an expire date, your users will have to request another Signed URL if they want to download the file another time.
+
+- a delivery system which will keep track of email/files association and will automatically generate one time signed url for your customer, every time they want to download the file they bought
+
+With these things you can tell the delivery system that the specified email bought the file, give your customer the returned delivery URL and let the delivery system handle download requests.
+
+If for some reason you want to prevent an email from downloading your files, just cut the association in the database.
+
+* What DIE MIDS will do for you later
+
+I intend to build modules for DIE MIDS:
+
+- items: will let you create shop items with descriptions, langs, multi files, automatically create delivery emails for you
+- paypal: easily integrate DIE MIDS with PayPal so a functionnal shop can be created in a matter of minutes.
+- stats: keep track of your downloads, users, abuses, etc.

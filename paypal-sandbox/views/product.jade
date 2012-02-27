@@ -1,0 +1,65 @@
+- var bought = (typeof bought !== 'undefined' && bought == true);
+- var cancelled = (typeof cancelled !== 'undefined' && cancelled == true);
+!!! 5
+html
+  head
+    title My Product to buy
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
+    script(type="text/javascript")
+      function closePaypalWindow(bought, content){
+        if (window.opener){
+          if (window.opener.setBought)
+            window.opener.setBought(bought, content);
+          window.close();
+        }
+        else if (top.dg.isOpen() == true){
+          if (top.setBought)
+            top.setBought(bought, content);
+          top.dg.closeFlow();
+        }
+      }
+      function setBought(bought, ppmessage){
+        if (bought){
+          $("form").hide();
+        }
+        if (ppmessage)
+          $("#pp-message").html(ppmessage);
+      }
+  body
+    h1 My product to buy (RND# #{Math.round(Math.random()*10000)})
+
+    p This is some description bla bla bla bla bla.
+
+    -if (!bought && !cancelled)
+      form(action="/pp-buy", method="post")
+        p
+          input(type="image", src="https://www.paypal.com/en_US/i/btn/btn_dg_pay_w_paypal.gif", id="submitBtn", value="Pay with Paypal")
+          //- input(id="submitBtn", type="submit", value="Pay with PayPal")
+          input(type="hidden", name="success_url", value="http://sandbox.labe.me/pp-success")
+          input(type="hidden", name="cancel_url", value="http://sandbox.labe.me/pp-cancel")
+
+      div#pp-message
+
+      script(src="https://www.paypalobjects.com/js/external/dg.js")
+      script(type="text/javascript")
+        var dg = new PAYPAL.apps.DGFlow({
+          trigger: "submitBtn",
+          expType: "instant"
+        });
+
+    -else if (bought)
+      div#pp-message
+        p You bought the product. Congratulations!
+        p You will really soon receive an email containing your download link!
+        p If you do not receive the email, please check your spam folder.
+        p Do not hesitate to contact us on support@foo.com if you experience any problem!
+        p Cheers.
+        p Laurent.
+      script(type="text/javascript")
+        closePaypalWindow(true, $("#pp-message").html());
+
+    -else if (cancelled)
+      div#pp-message
+        p You cancelled the payment, so sad…
+      script(type="text/javascript")
+        closePaypalWindow(false, $("#pp-message").html());
