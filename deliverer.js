@@ -3,6 +3,7 @@
 // Author: Laurent Bedubourg <laurent@labe.me>
 
 var BASE = process.env.CLOUDFRONT_DOMAIN;
+var fs = require('fs');
 var redis = require('redis');
 var app = require('express').createServer();
 var signer = require('./signer');
@@ -34,4 +35,17 @@ var httpsOptions = {
     key:fs.readFileSync('certs/delivery-key.pem'),
     cert:fs.readFileSync('certs/delivery-cert.pem')
 }
-var https = require('express').createServer();
+var https = require('express').createServer(httpsOptions);
+https.get('/add', function(req, res){
+    var email = req.param('email');
+    var key = req.param('key');
+    var reg = req.param('reg');
+    auth.add(email, key, reg, function(err){
+        if (err){
+            res.end(err);
+            return;
+        }
+        res.end("OK");
+    });
+});
+https.listen(8001);
