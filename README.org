@@ -61,3 +61,56 @@ I intend to build modules for DIE MIDS:
 - items: will let you create shop items with descriptions, langs, multi files, automatically create delivery emails for you
 - paypal: easily integrate DIE MIDS with PayPal so a functionnal shop can be created in a matter of minutes.
 - stats: keep track of your downloads, users, abuses, etc.
+* Components
+** Amazon S3 - Simple Storage Service
+http://aws.amazon.com/s3/
+Put your files an amazon's cloud, in a region (Europe - Ireland for instance).
+Private or public, your files are save.
+You benefit from the huge amazon's infrastructure (brandwidth, lowcost, no server to administer).
+Caveat: your files will be quite fast on specified region but slow otherwhere.
+Note: giving access rights using signed URL with expire date is possible.
+** Amazon CloudFront
+http://aws.amazon.com/cloudfront/
+A world wide proxy.
+Your files are cached on 'Edge' locations everywhere in the world.
+Once cached, downloading your files is fast.
+Note: giving access rights using signed URL with expire date is possible.
+** configure script
+This script will help you setup S3 + CloudFront for secure delivery without getting your hands too dirty :)
+
+* Organizing your files on S3
+
+I think it is a good idea to create a folder for each project you are selling.
+
+I want my games to be multiplatform and I want my users to be able to download the game for every platform they use.
+
+Hence, for the game 'MyGame' I will create a sub folder 'MyGame' in S3 which will contains all the files a user can download.
+
+The *authorizer regexp* can then be 'MyGame/.*'.
+
+If I ever create 'MyGame 2 the return', then I will create a new folder named MyGame2 and the *authorizer regexp* will be "MyGame2/.*".
+
+The two regexp are different and People who bought MyGame wont be able to dowload MyGame2.
+
+If my *authorizer regexp* had been "MyGame.*" then conflicts could have occured!
+
+* Updates
+
+Fixing bug and adding stuff is not uncommon.
+
+Telling people to download the new version of the game and install it again is quite boring.
+
+We have to find a way to do automatic updates when we can.
+
+I think that identifying the user with his email and his key could suffice within the game (enable auto-updates, highscore, etc. features).
+
+The game will then be able to fetch his updates thanks to whatever system you decide to put in place while still getting secure URLs through DIE MIDS and dowloading your updates from CloudFront.
+
+http://localhost:8000/get/lbedubourg@gmail.com/xxx/sc0001.png
+http://localhost:8000/get/lbedubourg@gmail.com/xxx/sub/sc0002.png
+
+
+
+
+
+

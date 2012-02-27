@@ -7,11 +7,11 @@ function Authorizer(store){
 }
 
 Authorizer.prototype.add = function(email, key, regexp, callback){
-    this.store.set(email+"#"+key, {email:email, reg:regexp}, callback);
+    this.store.set((email+"#"+key).toLowerCase(), {email:email, reg:regexp}, callback);
 }
 
 Authorizer.prototype.access = function(email, key, file, callback){
-    var entry = this.store.get(email+"#"+key, function(err, entry){
+    var entry = this.store.get((email+"#"+key).toLowerCase(), function(err, entry){
         if (err)
             return callback(err);
         if (entry == null)
@@ -25,21 +25,37 @@ Authorizer.prototype.access = function(email, key, file, callback){
     });
 }
 
+// ---------------------------------------------------------------------------
+
+function RedisStore(client){
+    this.redis = client;
+}
+
+RedisStore.prototype.set = function(key, value, callback){
+    this.redis.hmset(key, value, callback);
+}
+
+RedisStore.prototype.get = function(key, callback){
+    this.redis.hgetall(key, callback);
+}
+
+// ---------------------------------------------------------------------------
 
 function MemoryStore(){
     this.data = [];
 }
 
 MemoryStore.prototype.set = function(key, value, callback){
-    this.data[key.toLowerCase()] = value;
+    this.data[key] = value;
     callback(null);
 }
 
 MemoryStore.prototype.get = function(key, callback){
-    if (this.data[key.toLowerCase()] == null)
-        return callback("Object "+key.toLowerCase()+" not found in MemoryStore.");
-    callback(null, this.data[key.toLowerCase()]);
+    if (this.data[key] == null)
+        return callback("Object "+key+" not found in MemoryStore.");
+    callback(null, this.data[key]);
 }
 
 module.exports.Authorizer = Authorizer;
 module.exports.MemoryStore = MemoryStore;
+module.exports.RedisStore = RedisStore;
