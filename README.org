@@ -106,6 +106,7 @@ I think that identifying the user with his email and his key could suffice withi
 
 The game will then be able to fetch his updates thanks to whatever system you decide to put in place while still getting secure URLs through DIE MIDS and dowloading your updates from CloudFront.
 
+https://localhost:8001/add?email=test@test.com&key=yyy&reg=sub/.*
 http://localhost:8000/get/lbedubourg@gmail.com/xxx/sc0001.png
 http://localhost:8000/get/lbedubourg@gmail.com/xxx/sub/sc0002.png
 

@@ -1,0 +1,10 @@
+{
+    "name":"diemids",
+    "main":"./lib/index.js",
+    "description": "Delivery It Enthusiastic! My Indie Delivery System help you create, configure and run a secure, efficient, and lowcost digital goods delivery system on top of Amazon S3 and Amazon CloudFront. Ideal to sell, for example, your indie games. Just plug your payment system or use one of the plugins (paypal) and you are ready to go.",
+    "author": "Laurent Bedubourg <laurent@labe.me>",
+    "dependencies":{},
+    "keywords": ["amazon","delivery","shop","download"]
+    "repository": "git://github.com/labe-me/diemids",
+    "engines": { "node":">= 0.6.0 < 0.7.0" }
+}
