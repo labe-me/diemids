@@ -1,13 +1,20 @@
 //
 // play with paypal digital goods payments
 //
+// This is a test application working with the paypal sandbox.
+//
+// Author: Laurent Bedubourg <laurent@labe.me>
+//
 
-
+var config = require('../config');
 var paypal = require('./paypal');
-paypal.USER = "ppsel_1330005765_biz_api1.labe.me";
-paypal.PASS = "1330005793";
-paypal.SIGNATURE = "AFcWxV21C7fd0v3bYYYRCpSSRl31AfVR-Kv9b7zxS2c-9qOwJ9vWgTFs";
+paypal.USER = config.paypal.user;
+paypal.PASS = config.paypal.pass;
+paypal.SIGNATURE = config.paypal.signature;
 
+// we create the same cart between each requests but usually 
+// it should be stored either in the session or into some 
+// database (see below).
 function createDummyCart(){
     var result = new paypal.Cart();
     result.currencyCode = "EUR";

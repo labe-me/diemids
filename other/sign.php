@@ -43,7 +43,7 @@ function getSignedURL($resource, $timeout)
 	$signature = str_replace(array('+','=','/'), array('-','_','~'), $base64_signed_policy);
 
 	//Construct the URL
-	if (strpos($resource,'?') == -1)
+	if (strpos($resource,'?') === false)
 		$url = $resource.'?';
 	else
 		$url = $resource.'&';
