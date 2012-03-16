@@ -3,12 +3,19 @@
 // Author: Laurent Bedubourg <laurent@labe.me>
 //
 
+var fs = require('fs');
+
 var config = {
 };
 
 // Your public CloudFront domain name.
 config.cloudfront = {
     domain: "download.example.com"
+};
+
+config.signer = {
+    keyPairId: "AMAZON-KEY-PAIR-ID",
+    privateKey: fs.readFileSync("certs/aws-cloudfront-pk-AMAZON-KEY-PAIR-ID.pem", "UTF-8"),
 };
 
 // the delivery service port. 
@@ -32,6 +39,10 @@ config.paypal = {
     user: "paypalseller",
     pass: "1234567890",
     signature: "AAAAAAFFFFFFFFCCCCCCCCCCCQQQQQ-XXXXXXX"
+};
+
+config.store = {
+    type: "redis"
 };
 
 module.exports = config;
