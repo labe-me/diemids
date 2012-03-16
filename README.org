@@ -2,17 +2,19 @@ Deliver It Enthusiastic! My Indie Delivery Service (DIE MIDS)
 
 Author: Laurent Bedubourg <laurent@labe.me>
 
+* Status: work in progress, seems to work but requires cleanup and code before broad use.
+
 * Short description
 
-This project help you *easily* create a secure and low cost delivery system for your virtual Goods (files) using Amazon Web Services S3 and CloudFront. Perfect for indie games delivery but also good for any kind of file based shop.
+This project helps you *easily* create a secure and low cost delivery system for your virtual Goods (files) using Amazon Web Services S3 and CloudFront. Perfect for indie games delivery but also good for any kind of file based shop.
 
 * About
 
 Once upon a time an indie game developer used Share-it to deliver its games files. The backend interface was old, slow, complex. The service wasn't free too.
 There was options but something was wrong with each of them.
-Then the developer meet Gumroad and was pleased by the simplicity but was dissatisfied with the lack security and the lack of different payment types.
+Then the developer meet Gumroad and was pleased by the simplicity but was dissatisfied with the lack of security, the lack of different payment types and the lack of control.
 The developer took the time to think.
-He heard about Amazon Web Services cheapness but wondered if there was a way to secure files a little bit. He also was afraid of having to manage a bloated system and lose time instead of creating games.
+He heard about Amazon Web Services cheapness but wondered if there was a way to secure files a little bit (he wasn't willing to pay for piracy bandwidth). He also was afraid of having to manage a bloated system and lose time instead of creating games.
 Suddenly a page he never saw before popped up on Paypal: Virtual Goods 10cents + 5% for goods priced less than 10 bucks.
 He decided to take a deeper look at Amazon Web Services (AWS).
 
@@ -20,35 +22,42 @@ After some research he knew that:
 1. it was possible to make the S3 bucket (the place where you put your files) private
 2. it was possible use CloudFront as a proxy to the bucket and only allow downloads through signed URLs with an expiration date
 3. it would cost less than $1.50 for 1000 secure downloads of a 10MB file per month
-4. the AWS API was quite complex and he had to find some library to play with it
+4. the AWS API was quite bloated and he had to find some library to play with it
 5. he had to make the world a better place and share his idea and code with the world.
 
 Hence was born the idea of "Deliver It Enthusiastic! My Indie Delivery Service" (DIE MIDS).
 
 * Philosophy
 
-Safeguard your independence and your freedom.
+Independence and freedom through control.
 
-Simple Stupid
+Keep It Simple Stupid.
 
 This project is made public to help developers have a better share and a better control on their goods.
 
-This project has to make things dead simple and easy.
+Delivering files should be simple, you can plug your own payment system above AWS.
 
-This project has to be modular so developers can use the part they like from their own code.
+This project has to be modular so developers can use parts they like and just ignore or rewrite things they don't like.
 
 * What DIE MIDS can do for you
 
-DIE MIDS contains a few things to make your life simpler:
+DIE MIDS contains and will contain a few things to make your life simpler:
 
 - a configuration script which will configure S3 and CloudFront so you won't have to bother learning how they work and how to manipulate their APIs.
 
-- an easy way to upload files to S3 (although you can use any tool under the sun to do that)
+  That's configure.js, if you don't want to use node.js, you can just use this script to configure your AWS and then code the rest in your favorite language.
+
+- (TODO) an easy way to upload files to S3 (although you can use any tool under the sun to do that)
 
 - an easy way to generate signed (ie: secure) URLs for files you uploaded on S3.
-  Signed URLs cannot be modified by users, CloudFront will refuse to serve the file if the URLs is not requested has you generated it or is not Signed. Signed URLs have an expire date, your users will have to request another Signed URL if they want to download the file another time.
+
+  Signed URLs cannot be modified by users, CloudFront will refuse to serve the file if the URLs is not the one you generated.
+
+  Signed URLs have an expire date, your users will have to request another Signed URL if they want to download the file another time.
 
 - a delivery system which will keep track of email/files association and will automatically generate one time signed url for your customer, every time they want to download the file they bought
+
+  The delivery system contains an optional HTTPS Backend with a simple API you can call from your code if you wish to
 
 With these things you can tell the delivery system that the specified email bought the file, give your customer the returned delivery URL and let the delivery system handle download requests.
 
@@ -59,26 +68,60 @@ If for some reason you want to prevent an email from downloading your files, jus
 I intend to build modules for DIE MIDS:
 
 - items: will let you create shop items with descriptions, langs, multi files, automatically create delivery emails for you
+
 - paypal: easily integrate DIE MIDS with PayPal so a functionnal shop can be created in a matter of minutes.
+
 - stats: keep track of your downloads, users, abuses, etc.
-* Components
-** Amazon S3 - Simple Storage Service
+
+* Pre-requisites
+** AWS account
+You have to create an AWS account at http://aws.amazon.com
+
+It is quite fast and easy if you already have an amazon account.
+
+You then have to subscribe to S3 and CloudFront services.
+
+*** Amazon S3 - Simple Storage Service
 http://aws.amazon.com/s3/
 Put your files an amazon's cloud, in a region (Europe - Ireland for instance).
-Private or public, your files are save.
+Private or public, your files are safe.
 You benefit from the huge amazon's infrastructure (brandwidth, lowcost, no server to administer).
 Caveat: your files will be quite fast on specified region but slow otherwhere.
-Note: giving access rights using signed URL with expire date is possible.
-** Amazon CloudFront
+Note: giving access rights using signed URL with expire date is possible. That's why we require CloudFront too.
+
+*** Amazon CloudFront
 http://aws.amazon.com/cloudfront/
 A world wide proxy.
 Your files are cached on 'Edge' locations everywhere in the world.
 Once cached, downloading your files is fast.
 Note: giving access rights using signed URL with expire date is possible.
-** configure script
-This script will help you setup S3 + CloudFront for secure delivery without getting your hands too dirty :)
 
-* Organizing your files on S3
+** Credential and stuff
+
+Go to "My account / console" > "Security Credentials"
+
+Here's the things you will need to get from this page:
+
+- your "AWS Account ID" (Account Identifiers section)
+
+- your access key (Access Credential section / Access Keys tab)
+  create one from the interface and copy the "Access Key ID" and the "Secret Access Key"
+
+- Amazon CloudFront Key Pairs (Access Credential section / Key Pairs tab)
+  create a key pair and keep the generated private .pem file and the Key Pair ID under your pillow, you will need it to sign URLs.
+
+** Run the configure script
+This script helps you setup S3 + CloudFront for secure delivery without getting your hands dirty :)
+
+# node configure.js --id AWS-ACCOUNT-ID --key ACCESS-KEY-ID --sec SECRET-ACCESS-KEY --bucket download.example.com --domain download.example.com --region us-east-1
+
+The Bucket is the name of your S3 repository. It is a good practice to chose something related to your domain name. Chosing the final domain name is not bad too.
+
+The Domain is the domain you want to appear in signed URLs.
+
+You then have to customize your DNS to add a CNAME as specified by the configure script.
+
+* Putting your files on S3
 
 I think it is a good idea to create a folder for each project you are selling.
 
@@ -86,9 +129,59 @@ I want my games to be multiplatform and I want my users to be able to download t
 
 Hence, for the game 'MyGame' I will create a sub folder 'MyGame' in S3 which will contains all the files a user can download.
 
-The *authorizer regexp* can then be 'MyGame/.*'.
+If I ever create 'MyGame 2 the return', then I will create a new folder named MyGame2.
 
-If I ever create 'MyGame 2 the return', then I will create a new folder named MyGame2 and the *authorizer regexp* will be "MyGame2/.*".
+Since DIE-MIDS does not manage your files (for now), you have to use aws.amazon.com console or one of the many tools around the block to put your files and organize your S3.
+
+* Configuring the deliverer and its Backend
+
+(Documentation in progress, code will change)
+
+- Create a 'certs' directory.
+- Put your private .pem into it.
+- Generate a certificate for SSL.
+- Rename config.js.tpl into config.js and change its content.
+- Edit app.js, please note the redis store :)
+
+* Talking to the backend
+** Adding an authorization
+# POST /auth
+# Content-Type: application/json
+# { 'email':'dummy@example.com', 'reg':'MyGame/.*', 'secret':'BACKEND_SECRET' }
+#
+# Returns:
+# { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXXX' }
+** Pausing/Resuming an authorization
+# DELETE /auth
+# Content-Type: application/json
+# { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX', 'secret':'BACKEND_SECRET' }
+#
+# Returns:
+# { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX', 'disabled':'true' }
+#
+# Note: Calling DELETE another time will restore the right.
+# { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX' }
+
+* Giving an URL to the user
+Say your delivery server is running on port 80 of get.mycompany.com
+
+After telling the backend that dummy@example.com can download MyGame/.* you get a key.
+
+You can then compose the following URLs:
+
+http://get.mycompany.com/dummy@example.com/XXXXXXXXXXXX/MyGame/MyGame-1.0.0.tgz
+http://get.mycompany.com/dummy@example.com/XXXXXXXXXXXX/MyGame/MyGame-1.0.0.exe
+http://get.mycompany.com/dummy@example.com/XXXXXXXXXXXX/MyGame/MyGame-1.0.0.dmg
+
+And the delivery server will take care of redirecting the USER to CloudFront with a signed URL with a small expire time.
+
+* Authorizer regexp
+
+In its current form, DIE-MIDS' authorizer don't know about your files. It only knows that an email has the right to request a signed URL or not.
+
+For the 'MyGame' example, the *authorizer regexp* can be 'MyGame/.*'. It means that the email can get all files contained in MyGame S3 folder.
+
+If MyGame 2 is created, the *authorizer regexp* will be "MyGame2/.*".
 
 The two regexp are different and People who bought MyGame wont be able to dowload MyGame2.
 
@@ -96,7 +189,7 @@ If my *authorizer regexp* had been "MyGame.*" then conflicts could have occured!
 
 * Updates
 
-Fixing bug and adding stuff is not uncommon.
+Fixing bugs and adding stuff is not uncommon.
 
 Telling people to download the new version of the game and install it again is quite boring.
 

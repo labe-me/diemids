@@ -1,0 +1,5 @@
+This is a small test application to play with paypal digital goods system.
+
+Feels free to use parts of this code to build your own shop.
+
+This will morph into a paypal plugin for DIE-MIDS sooner or later.

@@ -17,7 +17,7 @@ var Sync = require('sync');
 program
     .version("0.0.1")
     .usage("[options] setup")
-    .options('--verbose', 'Add some traces here and there.')
+    .option('--verbose', 'Add some traces here and there.')
     .option('--id <id>', 'Your Amazon Web Services id.')
     .option('--key <key>', 'Your Amazon Web Services access key.')
     .option('--sec <secure>', 'Your Amazon Web Services secure code.')
@@ -93,7 +93,7 @@ program
                 console.log("    The domain has been configured to work with %s", program.domain);
                 console.log("    Please add a CNAME pointing to %s in your DNS configuration", cfDomain);
                 console.log("    Example:");
-                console.log("    %s 900 IN CNAME %s.\n", program.domain.split(".").shift(), cfDomain);
+                console.log("    %s 900 IN CNAME %s\n", program.domain.split(".").shift(), cfDomain);
 
                 console.log("  - …");
             }
