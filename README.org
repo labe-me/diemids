@@ -144,6 +144,7 @@ Since DIE-MIDS does not manage your files (for now), you have to use aws.amazon.
 - Edit app.js, please note the redis store :)
 
 * Talking to the backend
+The HTTPS backend accept JSON requests to add, pause and resume an authorization.
 ** Adding an authorization
 # POST /auth
 # Content-Type: application/json
@@ -161,6 +162,31 @@ Since DIE-MIDS does not manage your files (for now), you have to use aws.amazon.
 #
 # Note: Calling DELETE another time will restore the right.
 # { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX' }
+** diemids/lib/json-request
+diemids contains a json-request tool which add methods to JSON.
+
+# require('diemids/lib/json-request');
+# JSON.post(
+#   "https://127.0.0.1:8081/auth",
+#   { email:'dummy@example.com', reg:'MyGame/.*', secret:'BACKEND_SECRET' },
+#   function(err, res){
+#     if (err)
+#       throw err;
+#     console.log(res.email, res.key);
+#   }
+# );
+#
+# ...
+#
+# JSON.del(
+#   "https://127.0.0.1:8081/auth",
+#   { email:'dummy@example.com', key:key, secret:'BACKEND_SECRET' },
+#   function(err, res){
+#     if (err)
+#       throw err;
+#     console.log(res.email, res.key, res.disabled);
+#   }
+# );
 
 * Giving an URL to the user
 Say your delivery server is running on port 80 of get.mycompany.com
