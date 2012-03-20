@@ -11,7 +11,7 @@ This project helps you *easily* create a secure and low cost delivery system for
 * About
 
 Once upon a time an indie game developer used Share-it to deliver its games files. The backend interface was old, slow, complex. The service wasn't free too.
-There was options but something was wrong with each of them.
+There were options but something was wrong with each of them.
 Then the developer meet Gumroad and was pleased by the simplicity but was dissatisfied with the lack of security, the lack of different payment types and the lack of control.
 The developer took the time to think.
 He heard about Amazon Web Services cheapness but wondered if there was a way to secure files a little bit (he wasn't willing to pay for piracy bandwidth). He also was afraid of having to manage a bloated system and lose time instead of creating games.
@@ -69,7 +69,7 @@ I intend to build modules for DIE MIDS:
 
 - items: will let you create shop items with descriptions, langs, multi files, automatically create delivery emails for you
 
-- paypal: easily integrate DIE MIDS with PayPal so a functionnal shop can be created in a matter of minutes.
+- paypal: easily integrate DIE MIDS with PayPal so a functional shop can be created in a matter of minutes.
 
 - stats: keep track of your downloads, users, abuses, etc.
 
@@ -85,8 +85,8 @@ You then have to subscribe to S3 and CloudFront services.
 [[http://aws.amazon.com/s3/]]
 Put your files an amazon's cloud, in a region (Europe - Ireland for instance).
 Private or public, your files are safe.
-You benefit from the huge amazon's infrastructure (brandwidth, lowcost, no server to administer).
-Caveat: your files will be quite fast on specified region but slow otherwhere.
+You benefit from the huge amazon's infrastructure (bandwidth, lowcost, no server to administer).
+Caveat: your files will be quite fast on specified region but slow other-where.
 Note: giving access rights using signed URL with expire date is possible. That's why we require CloudFront too.
 
 *** Amazon CloudFront
@@ -117,7 +117,7 @@ This script helps you setup S3 + CloudFront for secure delivery without getting 
 node configure.js --id AWS-ACCOUNT-ID --key ACCESS-KEY-ID --sec SECRET-ACCESS-KEY --bucket download.example.com --domain download.example.com --region us-east-1
 #+END_SRC
 
-The Bucket is the name of your S3 repository. It is a good practice to chose something related to your domain name. Chosing the final domain name is not bad too.
+The Bucket is the name of your S3 repository. It is a good practice to chose something related to your domain name. Choosing the final domain name is not bad too.
 
 The Domain is the domain you want to appear in signed URLs.
 
@@ -127,7 +127,7 @@ You then have to customize your DNS to add a CNAME as specified by the configure
 
 I think it is a good idea to create a folder for each project you are selling.
 
-I want my games to be multiplatform and I want my users to be able to download the game for every platform they use.
+I want my games to be multi-platform and I want my users to be able to download the game for every platform they use.
 
 Hence, for the game 'MyGame' I will create a sub folder 'MyGame' in S3 which will contains all the files a user can download.
 
@@ -219,9 +219,9 @@ For the 'MyGame' example, the *authorizer regexp* can be 'MyGame/.*'. It means t
 
 If MyGame 2 is created, the *authorizer regexp* will be "MyGame2/.*".
 
-The two regexp are different and People who bought MyGame wont be able to dowload MyGame2.
+The two regexp are different and People who bought MyGame wont be able to download MyGame2.
 
-If my *authorizer regexp* had been "MyGame.*" then conflicts could have occured!
+If my *authorizer regexp* had been "MyGame.*" then conflicts could have occurred!
 
 * Updates
 
@@ -231,11 +231,7 @@ Telling people to download the new version of the game and install it again is q
 
 We have to find a way to do automatic updates when we can.
 
-I think that identifying the user with his email and his key could suffice within the game (enable auto-updates, highscore, etc. features).
+I think that identifying the user with his email and his key could suffice within the game (enable auto-updates, high-scores, etc. features).
 
-The game will then be able to fetch his updates thanks to whatever system you decide to put in place while still getting secure URLs through DIE MIDS and dowloading your updates from CloudFront.
-
-
-
-
+The game will then be able to fetch his updates thanks to whatever system you decide to put in place while still getting secure URLs through DIE MIDS and downloading your updates from CloudFront.
 
