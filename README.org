@@ -75,14 +75,14 @@ I intend to build modules for DIE MIDS:
 
 * Pre-requisites
 ** AWS account
-You have to create an AWS account at http://aws.amazon.com
+You have to create an AWS account at [[http://aws.amazon.com]]
 
 It is quite fast and easy if you already have an amazon account.
 
 You then have to subscribe to S3 and CloudFront services.
 
 *** Amazon S3 - Simple Storage Service
-http://aws.amazon.com/s3/
+[[http://aws.amazon.com/s3/]]
 Put your files an amazon's cloud, in a region (Europe - Ireland for instance).
 Private or public, your files are safe.
 You benefit from the huge amazon's infrastructure (brandwidth, lowcost, no server to administer).
@@ -90,7 +90,7 @@ Caveat: your files will be quite fast on specified region but slow otherwhere.
 Note: giving access rights using signed URL with expire date is possible. That's why we require CloudFront too.
 
 *** Amazon CloudFront
-http://aws.amazon.com/cloudfront/
+[[http://aws.amazon.com/cloudfront/]]
 A world wide proxy.
 Your files are cached on 'Edge' locations everywhere in the world.
 Once cached, downloading your files is fast.
