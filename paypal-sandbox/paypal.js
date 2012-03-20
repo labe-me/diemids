@@ -1,3 +1,7 @@
+// Paypal digital goods cart.
+//
+// Author: Laurent Bedubourg <laurent@labe.me>
+
 exports.USER = null;
 exports.PASS = null;
 exports.SIGNATURE = null;
@@ -19,7 +23,7 @@ function moneyToString(amount){
 
 function getError(o){
     if (o.ACK != "Failure")
-        return null;
+        return o.ACK;
     if (o.L_SHORTMESSAGE0 != null)
         return o.L_SHORTMESSAGE0;
     return "Paypal error.";
@@ -55,6 +59,18 @@ function runAPICall(nvps, callback) {
     r.on('error', callback);
     r.write(postdata);
     r.end();
+}
+
+function getTransactionDetails(id, callback){
+    var vars = {
+        "VERSION": "65.1",
+        "METHOD": "GetTransactionDetails",
+        "USER": module.exports.USER,
+        "PWD": module.exports.PASS,
+        "SIGNATURE": module.exports.SIGNATURE,
+        "TransactionId": id
+    };
+    runAPICall(vars, callback);
 }
 
 var Cart = function(){
@@ -109,7 +125,7 @@ Cart.prototype.setExpressCheckout = function(params, callback){
             return callback(err);
         if ((paypalResponse.ACK != "Success" && paypalResponse.ACK != "SuccessWithWarning") || paypalResponse.TOKEN == null)
             return callback(getError(paypalResponse));
-        callback(null, module.exports.INCONTEXT_URL+"?token="+paypalResponse.TOKEN);
+        callback(null, paypalResponse.TOKEN, module.exports.INCONTEXT_URL+"?token="+paypalResponse.TOKEN);
     });
 }
 
@@ -125,8 +141,9 @@ Cart.prototype.doExpressCheckoutPayment = function(token, PayerID, callback){
             return callback(err);
         if ((paypalResponse.ACK != "Success" && paypalResponse.ACK != "SuccessWithWarning") || paypalResponse.TOKEN == null)
             return callback(getError(paypalResponse));
-        callback(null, paypalResponse.TOKEN);
+        callback(null, paypalResponse);
     });
 }
 
 module.exports.Cart = Cart;
+module.exports.getTransactionDetails = getTransactionDetails;

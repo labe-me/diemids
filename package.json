@@ -9,9 +9,10 @@
         "commander": ">= 0.0.1",
         "sync": ">= 0.2.0",
         "redis": ">= 0.7.1",
-        "express": ">= 2.5.8"
+        "express": ">= 2.5.8",
+        "sprintf": ">= 0.1.1"
     },
-    "keywords": ["amazon","delivery","shop","download"],
+    "keywords": ["amazon","paypal","delivery","shop","download"],
     "repository": "git://github.com/labe-me/diemids",
     "engines": { "node":">= 0.6.9 < 0.7.0" }
 }

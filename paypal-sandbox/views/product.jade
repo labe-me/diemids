@@ -26,7 +26,7 @@ html
           $("#pp-message").html(ppmessage);
       }
   body
-    h1 My product to buy (RND# #{Math.round(Math.random()*10000)})
+    h1 My product to buy
 
     p This is some description bla bla bla bla bla.
 
@@ -51,12 +51,12 @@ html
       div#pp-message
         p You bought the product. Congratulations!
         p You will really soon receive an email containing your download link!
+        p The email was sent to <strong>#{email}</strong>.
         p If you do not receive the email, please check your spam folder.
         p Do not hesitate to contact us on support@foo.com if you experience any problem!
         p Cheers.
         p Laurent.
-      script(type="text/javascript")
-        closePaypalWindow(true, $("#pp-message").html());
+        a(href='#', onclick='return closePaypalWindow(true, $("#pp-message").html());') Close Window
 
     -else if (cancelled)
       div#pp-message

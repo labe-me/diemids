@@ -1,5 +1,7 @@
-This is a small test application to play with paypal digital goods system.
+This is a small test application to play with PayPal digital goods system.
 
 Feels free to use parts of this code to build your own shop.
 
-This will morph into a paypal plugin for DIE-MIDS sooner or later.
+This will morph into a PayPal plugin for DIE-MIDS sooner or later.
+
+Note: run with environment variable NODE_ENV=production to leave the PayPal sandbox.
