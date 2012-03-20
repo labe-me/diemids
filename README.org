@@ -113,7 +113,9 @@ Here's the things you will need to get from this page:
 ** Run the configure script
 This script helps you setup S3 + CloudFront for secure delivery without getting your hands dirty :)
 
-# node configure.js --id AWS-ACCOUNT-ID --key ACCESS-KEY-ID --sec SECRET-ACCESS-KEY --bucket download.example.com --domain download.example.com --region us-east-1
+#+BEGIN_SRC
+node configure.js --id AWS-ACCOUNT-ID --key ACCESS-KEY-ID --sec SECRET-ACCESS-KEY --bucket download.example.com --domain download.example.com --region us-east-1
+#+END_SRC
 
 The Bucket is the name of your S3 repository. It is a good practice to chose something related to your domain name. Chosing the final domain name is not bad too.
 
@@ -146,47 +148,53 @@ Since DIE-MIDS does not manage your files (for now), you have to use aws.amazon.
 * Talking to the backend
 The HTTPS backend accept JSON requests to add, pause and resume an authorization.
 ** Adding an authorization
-# POST /auth
-# Content-Type: application/json
-# { 'email':'dummy@example.com', 'reg':'MyGame/.*', 'secret':'BACKEND_SECRET' }
-#
-# Returns:
-# { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXXX' }
+#+BEGIN_SRC
+POST /auth
+Content-Type: application/json
+{ 'email':'dummy@example.com', 'reg':'MyGame/.*', 'secret':'BACKEND_SECRET' }
+
+Returns:
+{ 'email':'dummy@example.com', 'key':'XXXXXXXXXXXXX' }
+#+END_SRC
 ** Pausing/Resuming an authorization
-# DELETE /auth
-# Content-Type: application/json
-# { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX', 'secret':'BACKEND_SECRET' }
-#
-# Returns:
-# { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX', 'disabled':'true' }
-#
-# Note: Calling DELETE another time will restore the right.
-# { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX' }
+#+BEGIN_SRC
+DELETE /auth
+Content-Type: application/json
+{ 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX', 'secret':'BACKEND_SECRET' }
+
+Returns:
+{ 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX', 'disabled':'true' }
+
+Note: Calling DELETE another time will restore the right.
+{ 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX' }
+#+END_SRC
 ** diemids/lib/json-request
 diemids contains a json-request tool which add methods to JSON.
 
-# require('diemids/lib/json-request');
-# JSON.post(
-#   "https://127.0.0.1:8081/auth",
-#   { email:'dummy@example.com', reg:'MyGame/.*', secret:'BACKEND_SECRET' },
-#   function(err, res){
-#     if (err)
-#       throw err;
-#     console.log(res.email, res.key);
-#   }
-# );
-#
-# ...
-#
-# JSON.del(
-#   "https://127.0.0.1:8081/auth",
-#   { email:'dummy@example.com', key:key, secret:'BACKEND_SECRET' },
-#   function(err, res){
-#     if (err)
-#       throw err;
-#     console.log(res.email, res.key, res.disabled);
-#   }
-# );
+#+BEGIN_SRC
+require('diemids/lib/json-request');
+JSON.post(
+  "https://127.0.0.1:8081/auth",
+  { email:'dummy@example.com', reg:'MyGame/.*', secret:'BACKEND_SECRET' },
+  function(err, res){
+    if (err)
+      throw err;
+    console.log(res.email, res.key);
+  }
+);
+
+...
+
+JSON.del(
+  "https://127.0.0.1:8081/auth",
+  { email:'dummy@example.com', key:key, secret:'BACKEND_SECRET' },
+  function(err, res){
+    if (err)
+      throw err;
+    console.log(res.email, res.key, res.disabled);
+  }
+);
+#+END_SRC
 
 * Giving an URL to the user
 Say your delivery server is running on port 80 of get.mycompany.com
@@ -195,9 +203,11 @@ After telling the backend that dummy@example.com can download MyGame/.* you get 
 
 You can then compose the following URLs:
 
+#+BEGIN_SRC
 http://get.mycompany.com/dummy@example.com/XXXXXXXXXXXX/MyGame/MyGame-1.0.0.tgz
 http://get.mycompany.com/dummy@example.com/XXXXXXXXXXXX/MyGame/MyGame-1.0.0.exe
 http://get.mycompany.com/dummy@example.com/XXXXXXXXXXXX/MyGame/MyGame-1.0.0.dmg
+#+END_SRC
 
 And the delivery server will take care of redirecting the USER to CloudFront with a signed URL with a small expire time.
 
@@ -224,11 +234,6 @@ We have to find a way to do automatic updates when we can.
 I think that identifying the user with his email and his key could suffice within the game (enable auto-updates, highscore, etc. features).
 
 The game will then be able to fetch his updates thanks to whatever system you decide to put in place while still getting secure URLs through DIE MIDS and dowloading your updates from CloudFront.
-
-https://localhost:8001/add?email=test@test.com&key=yyy&reg=sub/.*
-http://localhost:8000/get/lbedubourg@gmail.com/xxx/sc0001.png
-http://localhost:8000/get/lbedubourg@gmail.com/xxx/sub/sc0002.png
-
 
 
 
