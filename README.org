@@ -74,7 +74,9 @@ I intend to build modules for DIE MIDS:
 - stats: keep track of your downloads, users, abuses, etc.
 
 * Pre-requisites
+
 ** AWS account
+
 You have to create an AWS account at [[http://aws.amazon.com]]
 
 It is quite fast and easy if you already have an amazon account.
@@ -82,7 +84,9 @@ It is quite fast and easy if you already have an amazon account.
 You then have to subscribe to S3 and CloudFront services.
 
 *** Amazon S3 - Simple Storage Service
+
 [[http://aws.amazon.com/s3/]]
+
 Put your files an amazon's cloud, in a region (Europe - Ireland for instance).
 Private or public, your files are safe.
 You benefit from the huge amazon's infrastructure (bandwidth, lowcost, no server to administer).
@@ -90,7 +94,9 @@ Caveat: your files will be quite fast on specified region but slow other-where.
 Note: giving access rights using signed URL with expire date is possible. That's why we require CloudFront too.
 
 *** Amazon CloudFront
+
 [[http://aws.amazon.com/cloudfront/]]
+
 A world wide proxy.
 Your files are cached on 'Edge' locations everywhere in the world.
 Once cached, downloading your files is fast.
@@ -111,6 +117,7 @@ Here's the things you will need to get from this page:
   create a key pair and keep the generated private .pem file and the Key Pair ID under your pillow, you will need it to sign URLs.
 
 ** Run the configure script
+
 This script helps you setup S3 + CloudFront for secure delivery without getting your hands dirty :)
 
 #+BEGIN_SRC
@@ -137,17 +144,39 @@ Since DIE-MIDS does not manage your files (for now), you have to use aws.amazon.
 
 * Configuring the deliverer and its Backend
 
-(Documentation in progress, code will change)
+#+BEGIN_SRC
+mkdir myproject
+cd myproject
+npm install https://github.com/labe-me/node-awssum/tarball/master
+npm install https://github.com/labe-me/diemids/tarball/master
+#+END_SRC
+
+You have a full example in node_modules/diemids/example/
+
+See diemids-app.js
+
+Usually you should:
 
 - Create a 'certs' directory.
-- Put your private .pem into it.
-- Generate a certificate for SSL.
-- Rename config.js.tpl into config.js and change its content.
-- Edit app.js, please note the redis store :)
+- Put your private amazon web services .pem file into it.
+- Generate a SSL certificate for the backend
+  #+BEGIN_SRC
+  openssl genrsa -out backend-key.pem 1024
+  openssl req -new -key backend-key.pem -out backend-csr.pem
+  openssl x509 -req -in -csr.pem -signkey backend-key.pem -out backend-cert.pem
+  #+END_SRC
+- Copy and rename config.js.tpl into config.js and change its content.
+- Copy and edit diemids-app.js, please note the redis store, you might want to hack a little to change that.
+- Run diemids-app.js
 
-* Talking to the backend
+* Talking to the backend from your shop
+
 The HTTPS backend accept JSON requests to add, pause and resume an authorization.
+
+See node_modules/diemids/example/app.js for a nearly complete example of how to integrate diemids in a shop.
+
 ** Adding an authorization
+
 #+BEGIN_SRC
 POST /auth
 Content-Type: application/json
@@ -156,7 +185,9 @@ Content-Type: application/json
 Returns:
 { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXXX' }
 #+END_SRC
+
 ** Pausing/Resuming an authorization
+
 #+BEGIN_SRC
 DELETE /auth
 Content-Type: application/json
@@ -168,7 +199,9 @@ Returns:
 Note: Calling DELETE another time will restore the right.
 { 'email':'dummy@example.com', 'key':'XXXXXXXXXXXX' }
 #+END_SRC
+
 ** diemids/lib/json-request
+
 diemids contains a json-request tool which add methods to JSON.
 
 #+BEGIN_SRC
@@ -197,6 +230,7 @@ JSON.del(
 #+END_SRC
 
 * Giving an URL to the user
+
 Say your delivery server is running on port 80 of get.mycompany.com
 
 After telling the backend that dummy@example.com can download MyGame/.* you get a key.
@@ -209,6 +243,8 @@ http://get.mycompany.com/dummy@example.com/XXXXXXXXXXXX/MyGame/MyGame-1.0.0.exe
 http://get.mycompany.com/dummy@example.com/XXXXXXXXXXXX/MyGame/MyGame-1.0.0.dmg
 #+END_SRC
 
+Where XXXXXXXXXXXX is the key delivered by the authentifier.
+
 And the delivery server will take care of redirecting the USER to CloudFront with a signed URL with a small expire time.
 
 * Authorizer regexp
@@ -217,7 +253,7 @@ In its current form, DIE-MIDS' authorizer don't know about your files. It only k
 
 For the 'MyGame' example, the *authorizer regexp* can be 'MyGame/.*'. It means that the email can get all files contained in MyGame S3 folder.
 
-If MyGame 2 is created, the *authorizer regexp* will be "MyGame2/.*".
+If MyGame 2 is created, the *authorizer regexp* may be "MyGame2/.*".
 
 The two regexp are different and People who bought MyGame wont be able to download MyGame2.
 
@@ -234,4 +270,3 @@ We have to find a way to do automatic updates when we can.
 I think that identifying the user with his email and his key could suffice within the game (enable auto-updates, high-scores, etc. features).
 
 The game will then be able to fetch his updates thanks to whatever system you decide to put in place while still getting secure URLs through DIE MIDS and downloading your updates from CloudFront.
-

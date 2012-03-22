@@ -1,5 +1,5 @@
 var config = require('./config');
-var diemids = require("./lib");
+var diemids = require("diemids");
 var store = null;
 if (config.store.type == "redis"){
     var redis = require('redis').createClient();

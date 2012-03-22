@@ -5,3 +5,14 @@ Feels free to use parts of this code to build your own shop.
 This will morph into a PayPal plugin for DIE-MIDS sooner or later.
 
 Note: run with environment variable NODE_ENV=production to leave the PayPal sandbox.
+
+* Contents
+- *diemids-app.js*: starts DIEMIDS Deliverer and Backend
+- *app.js*: express web application demonstrating how to sell files using DIEMIDS and PayPal
+* Configuration
+- rename config.js.tpl to config.js and edit its content to fit your configuration.
+- start diemids-app.js
+- start app.js
+* Notes
+- it is possible to start all services from a unique file.
+- you should add some security around services (forever or something like that)

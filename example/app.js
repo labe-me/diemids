@@ -4,7 +4,7 @@
 //
 // Author: Laurent Bedubourg <laurent@labe.me>
 
-var config = require('../config');
+var config = require('./config');
 var paypal = require('./paypal');
 paypal.USER = config.paypal.user;
 paypal.PASS = config.paypal.pass;
@@ -24,6 +24,7 @@ function createDummyCart(){
     return result;
 }
 
+require('diemids/lib/json-request');
 var express = require('express');
 
 var app = express.createServer();
@@ -68,15 +69,28 @@ app.get('/pp-success', function(req, res){
 
                 var customerEmail = data.EMAIL;
 
-                // TODO: call DIEMIDS backend
+                console.log("Talking to "+config.backend.url);
 
-                // TODO: send confirmation email with download links
+                // TODO: we should use our item's regular expression and file and not a static strings :)
+                JSON.post(
+                    config.backend.url+"/auth",
+                    { email:customerEmail, reg:'MyGame/.*', secret:config.backend.secret },
+                    function(err, dm){
+                        if (err)
+                            throw err;
 
-                // TODO: show confirmation message
+                        var url = config.deliverer.url+"/"+dm.email+"/"+dm.key+"/MyGame/MyGame-1.0.0.zip";
 
-                // That's it, we the payment is ok and we should have the money
-                // This goes in the small paypal frame, we might prefer to have a nice page.
-                res.render('product.jade', { bought:true, email:customerEmail });
+                        // TODO: send confirmation email with download links (use emailjs module)
+                        console.log(url);
+
+                        // That's it, we the payment is ok and we should have the money
+                        // This goes in the small paypal frame, we might prefer to have a nice page.
+                        res.render('product.jade', { bought:true, email:customerEmail, url:url });
+
+                    }
+                );
+
             });
         }
     );
