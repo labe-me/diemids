@@ -270,3 +270,10 @@ We have to find a way to do automatic updates when we can.
 I think that identifying the user with his email and his key could suffice within the game (enable auto-updates, high-scores, etc. features).
 
 The game will then be able to fetch his updates thanks to whatever system you decide to put in place while still getting secure URLs through DIE MIDS and downloading your updates from CloudFront.
+
+* Donations
+
+Are always welcome to pay beers and bills: [[http://labe.me/en/diemids.html]]
+
+Thank you!
+Laurent
